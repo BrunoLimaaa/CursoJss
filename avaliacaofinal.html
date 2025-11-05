@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Painel de Cotações Inteligente - Bruno de Almeida Lima</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+    :root {
+      --bg: #f1f5f9;
+      --card: #ffffff;
+      --text: #0f172a;
+      --primary: #2563eb;
+      --primary-dark: #1e40af;
+      --success: #10b981;
+      --danger: #ef4444;
+      --warning: #f59e0b;
+    }
+
+    body.dark {
+      --bg: #0f172a;
+      --card: #1e293b;
+      --text: #e2e8f0;
+      --primary: #38bdf8;
+      --primary-dark: #0ea5e9;
+      --success: #34d399;
+      --danger: #f87171;
+      --warning: #fbbf24;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      transition: background 0.5s, color 0.5s;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    header {
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      color: white;
+      text-align: center;
+      padding: 1.5rem;
+      box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+    }
+
+    header h1 { margin: 0; font-size: 1.8rem; }
+
+    main {
+      flex: 1;
+      max-width: 1200px;
+      margin: auto;
+      padding: 20px;
+    }
+
+    section {
+      background: var(--card);
+      border-radius: 16px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      padding: 2rem;
+      margin-bottom: 2rem;
+      transition: background 0.5s;
+    }
+
+    h2 { text-align: center; color: var(--primary-dark); }
+
+    .controls {
+      text-align: center;
+      margin: 1rem 0;
+    }
+
+    input, select {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #cbd5e1;
+      width: 200px;
+      font-size: 1rem;
+      text-transform: uppercase;
+      text-align: center;
+      background: white;
+    }
+
+    button {
+      background: linear-gradient(90deg, var(--primary), var(--primary-dark));
+      color: white;
+      border: none;
+      padding: 10px 18px;
+      margin-left: 10px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      transform: scale(1.05);
+      opacity: 0.9;
+    }
+
+    button.success {
+      background: linear-gradient(90deg, var(--success), #059669);
+    }
+
+    button.danger {
+      background: linear-gradient(90deg, var(--danger), #dc2626);
+    }
+
+    button.warning {
+      background: linear-gradient(90deg, var(--warning), #d97706);
+    }
+
+    #cardsCotacao, #cardsPersonalizados {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 1.5rem;
+      width: 240px;
+      text-align: center;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+      transition: 0.3s;
+      animation: aparecer 0.5s ease;
+      position: relative;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 15px rgba(0,0,0,0.2);
+    }
+
+    .card img {
+      width: 60px;
+      height: 60px;
+      margin-bottom: 10px;
+      border-radius: 8px;
+      object-fit: cover;
+    }
+
+    .valor { 
+      font-size: 1.4rem; 
+      font-weight: 600; 
+      margin: 10px 0;
+    }
+
+    .variacao {
+      font-size: 0.9rem;
+      padding: 3px 8px;
+      border-radius: 12px;
+      display: inline-block;
+    }
+
+    .positivo {
+      background-color: rgba(16, 185, 129, 0.2);
+      color: var(--success);
+    }
+
+    .negativo {
+      background-color: rgba(239, 68, 68, 0.2);
+      color: var(--danger);
+    }
+
+    .card-actions {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+
+    .card-actions button {
+      background: rgba(0,0,0,0.1);
+      padding: 5px 8px;
+      margin: 0;
+      font-size: 0.8rem;
+    }
+
+    #ultimaAtualizacao {
+      text-align: center;
+      font-size: 0.9rem;
+      color: gray;
+    }
+
+    .moeda-info {
+      font-size: 0.8rem;
+      color: #64748b;
+      margin-top: 5px;
+    }
+
+    footer {
+      background: var(--primary-dark);
+      color: white;
+      text-align: center;
+      padding: 1rem;
+    }
+
+    @keyframes aparecer {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 700px) {
+      .card { width: 90%; }
+      input, button, select { width: 80%; margin-top: 10px; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1> Painel de Cotações Inteligente</h1>
+    <p>Desenvolvido por <strong>Bruno de Almeida Lima</strong></p>
+    <button onclick="alternarTema()">🌗 Alternar Tema</button>
+  </header>
+
+  <main>
+    <!-- SEÇÃO 1: COTAÇÕES -->
+    <section>
+      <h2>🌍 Cotações de Moedas</h2>
+      <div class="controls">
+        <button onclick="atualizarCotacoes()">🔄 Atualizar Padrão</button>
+        <button onclick="atualizarTodasMoedas()" class="success">🔄 Atualizar Todas</button>
+      </div>
+      <div id="cardsCotacao"></div>
+      <p id="ultimaAtualizacao"></p>
+    </section>
+
+    <!-- SEÇÃO 2: MOEDAS PERSONALIZADAS -->
+    <section>
+      <h2>💰 Adicionar Moeda</h2>
+      <div class="controls">
+        <input type="text" id="inputMoeda" placeholder="Ex: GBP, ARS, CAD, ETH, JPY" onkeypress="if(event.key==='Enter') adicionarMoeda()">
+        <button onclick="adicionarMoeda()">➕ Adicionar</button>
+        <button onclick="limparMoedas()" class="danger">🗑 Limpar</button>
+      </div>
+      <div class="controls">
+        <small>Exemplos: USD, EUR, BTC, ETH, GBP, JPY, ARS, CAD, AUD, CHF, CNY</small>
+      </div>
+      <div id="cardsPersonalizados"></div>
+    </section>
+
+    <!-- SEÇÃO 3: CONVERSOR -->
+    <section>
+      <h2>🔢 Conversor de Valores</h2>
+      <div class="controls">
+        <input type="number" id="valorConversao" placeholder="Valor" min="0" step="0.01">
+        <select id="moedaConversao"></select>
+        <button onclick="converterValor()">💱 Converter para BRL</button>
+      </div>
+      <p id="resultadoConversao" style="text-align:center; font-weight:bold;"></p>
+    </section>
+
+    <!-- SEÇÃO 4: COMPARADOR -->
+    <section>
+      <h2>⚖️ Comparador de Moedas</h2>
+      <div class="controls">
+        <select id="moedaA"></select>
+        <select id="moedaB"></select>
+        <button onclick="compararMoedas()">📊 Comparar</button>
+      </div>
+      <p id="resultadoComparacao" style="text-align:center; font-weight:bold;"></p>
+    </section>
+  </main>
+
+  <footer>
+    Projeto Integrador de HTML, CSS e JavaScript — 2025 © Bruno de Almeida Lima
+  </footer>
+
+  <script>
+    const API_BASE = "https://economia.awesomeapi.com.br/json/last/";
+    const storageKey = "moedasPersonalizadas";
+    const moedasPadrao = ["USD", "EUR", "BTC"];
+    let todasMoedas = [...moedasPadrao];
+
+    // Mapeamento de moedas para nomes completos
+    const nomesMoedas = {
+      "USD": "Dólar Americano",
+      "EUR": "Euro",
+      "BTC": "Bitcoin",
+      "ETH": "Ethereum",
+      "GBP": "Libra Esterlina",
+      "JPY": "Iene Japonês",
+      "ARS": "Peso Argentino",
+      "CAD": "Dólar Canadense",
+      "AUD": "Dólar Australiano",
+      "CHF": "Franco Suíço",
+      "CNY": "Yuan Chinês",
+      "ILS": "Novo Shekel Israelense",
+      "BTC": "Bitcoin",
+      "LTC": "Litecoin",
+      "ETH": "Ethereum",
+      "XRP": "Ripple",
+      "BRL": "Real Brasileiro"
+    };
+
+    // Mapeamento de moedas para imagens
+    const imagensMoedas = {
+      "USD": "https://flagcdn.com/us.svg",
+      "EUR": "https://upload.wikimedia.org/wikipedia/commons/b/b7/Flag_of_Europe.svg",
+      "BTC": "https://upload.wikimedia.org/wikipedia/commons/4/46/Bitcoin.svg",
+      "ETH": "https://upload.wikimedia.org/wikipedia/commons/0/05/Ethereum_logo_2014.svg",
+      "GBP": "https://flagcdn.com/gb.svg",
+      "JPY": "https://flagcdn.com/jp.svg",
+      "ARS": "https://flagcdn.com/ar.svg",
+      "CAD": "https://flagcdn.com/ca.svg",
+      "AUD": "https://flagcdn.com/au.svg",
+      "CHF": "https://flagcdn.com/ch.svg",
+      "CNY": "https://flagcdn.com/cn.svg",
+      "ILS": "https://flagcdn.com/il.svg",
+      "LTC": "https://cryptologos.cc/logos/litecoin-ltc-logo.svg",
+      "XRP": "https://cryptologos.cc/logos/xrp-xrp-logo.svg"
+    };
+
+    // ===== FUNÇÕES DE TEMA =====
+    function alternarTema() {
+      document.body.classList.toggle("dark");
+      localStorage.setItem("temaEscuro", document.body.classList.contains("dark"));
+    }
+
+    if (localStorage.getItem("temaEscuro") === "true") {
+      document.body.classList.add("dark");
+    }
+
+    // ===== FUNÇÕES DE COTAÇÕES =====
+    async function atualizarCotacoes() {
+      const container = document.getElementById("cardsCotacao");
+      container.innerHTML = "<p>⏳ Carregando cotações...</p>";
+      try {
+        const resposta = await fetch(API_BASE + "USD-BRL,EUR-BRL,BTC-BRL");
+        if (!resposta.ok) throw new Error("Erro ao buscar API");
+        const dados = await resposta.json();
+
+        const cotacoes = [
+          { 
+            nome: nomesMoedas["USD"] || "Dólar (USD)", 
+            valor: parseFloat(dados.USDBRL.ask).toFixed(2), 
+            img: imagensMoedas["USD"] || "https://upload.wikimedia.org/wikipedia/commons/8/8c/Currency_exchange_icon.svg", 
+            codigo: "USD",
+            variacao: parseFloat(dados.USDBRL.pctChange)
+          },
+          { 
+            nome: nomesMoedas["EUR"] || "Euro (EUR)", 
+            valor: parseFloat(dados.EURBRL.ask).toFixed(2), 
+            img: imagensMoedas["EUR"] || "https://upload.wikimedia.org/wikipedia/commons/8/8c/Currency_exchange_icon.svg", 
+            codigo: "EUR",
+            variacao: parseFloat(dados.EURBRL.pctChange)
+          },
+          { 
+            nome: nomesMoedas["BTC"] || "Bitcoin (BTC)", 
+            valor: parseFloat(dados.BTCBRL.ask).toFixed(0), 
+            img: imagensMoedas["BTC"] || "https://upload.wikimedia.org/wikipedia/commons/8/8c/Currency_exchange_icon.svg", 
+            codigo: "BTC",
+            variacao: parseFloat(dados.BTCBRL.pctChange)
+          }
+        ];
+
+        container.innerHTML = "";
+        cotacoes.forEach(c => {
+          const card = document.createElement("div");
+          card.className = "card";
+          const variacaoClass = c.variacao >= 0 ? "positivo" : "negativo";
+          const variacaoSinal = c.variacao >= 0 ? "+" : "";
+          
+          card.innerHTML = `
+            <div class="card-actions">
+              <button onclick="adicionarAosSelects('${c.codigo}')" title="Adicionar aos seletores">➕</button>
+            </div>
+            <img src="${c.img}" alt="${c.nome}">
+            <h3>${c.nome}</h3>
+            <p class='valor'>R$ ${c.valor}</p>
+            <div class="variacao ${variacaoClass}">
+              ${variacaoSinal}${c.variacao}%
+            </div>
+            <div class="moeda-info">${c.codigo}/BRL</div>
+          `;
+          container.appendChild(card);
+        });
+
+        document.getElementById("ultimaAtualizacao").textContent =
+          "Última atualização: " + new Date().toLocaleString("pt-BR");
+      } catch (e) {
+        console.error("Erro:", e);
+        alert("Erro ao atualizar cotações. Verifique sua conexão.");
+        container.innerHTML = "";
+      }
+    }
+
+    // ===== FUNÇÕES DE MOEDAS PERSONALIZADAS =====
+    async function adicionarMoeda() {
+      const input = document.getElementById("inputMoeda");
+      const codigo = input.value.trim().toUpperCase();
+      
+      if (!codigo) {
+        alert("Digite o código da moeda!");
+        input.focus();
+        return;
+      }
+      
+      // Verificar se já existe
+      if (todasMoedas.includes(codigo)) {
+        alert("Esta moeda já foi adicionada!");
+        input.focus();
+        return;
+      }
+      
+      // Verificar se é uma moeda válida (3-4 caracteres)
+      if (codigo.length < 3 || codigo.length > 4) {
+        alert("Código de moeda inválido! Use 3-4 caracteres (ex: USD, BTC, ETH).");
+        input.focus();
+        return;
+      }
+      
+      try {
+        const resposta = await fetch(API_BASE + `${codigo}-BRL`);
+        
+        if (!resposta.ok) {
+          throw new Error(`Moeda ${codigo} não encontrada`);
+        }
+        
+        const dados = await resposta.json();
+        const chave = Object.keys(dados)[0];
+        
+        if (!dados[chave]) {
+          throw new Error(`Moeda ${codigo} não encontrada`);
+        }
+        
+        const moedaData = dados[chave];
+        const valor = parseFloat(moedaData.ask).toFixed(moedaData.codein === "BRL" ? 2 : 0);
+        const nome = nomesMoedas[codigo] || `${codigo}`;
+        const variacao = parseFloat(moedaData.pctChange) || 0;
+        const variacaoClass = variacao >= 0 ? "positivo" : "negativo";
+        const variacaoSinal = variacao >= 0 ? "+" : "";
+
+        const container = document.getElementById("cardsPersonalizados");
+        const card = document.createElement("div");
+        card.className = "card";
+        card.innerHTML = `
+          <div class="card-actions">
+            <button onclick="removerMoeda('${codigo}', this.parentNode.parentNode)" class="danger" title="Remover moeda">✕</button>
+          </div>
+          <img src="${imagensMoedas[codigo] || 'https://upload.wikimedia.org/wikipedia/commons/8/8c/Currency_exchange_icon.svg'}" 
+            alt="${nome}">
+          <h3>${nome}</h3>
+          <p class='valor'>R$ ${valor}</p>
+          <div class="variacao ${variacaoClass}">
+            ${variacaoSinal}${variacao}%
+          </div>
+          <div class="moeda-info">${codigo}/BRL</div>
+        `;
+        container.appendChild(card);
+
+        // Adicionar às listas de moedas
+        adicionarAosSelects(codigo);
+        salvarMoeda(codigo);
+        input.value = "";
+        input.focus();
+        
+      } catch (err) {
+        console.error(err);
+        alert(`Erro ao buscar moeda ${codigo}! Verifique se o código está correto.\n\nCódigos válidos: USD, EUR, BTC, ETH, GBP, JPY, ARS, CAD, etc.`);
+        input.focus();
+      }
+    }
+
+    function adicionarAosSelects(codigo) {
+      if (!todasMoedas.includes(codigo)) {
+        todasMoedas.push(codigo);
+        todasMoedas.sort();
+      }
+      
+      atualizarSelects();
+    }
+
+    function atualizarSelects() {
+      const selectConversao = document.getElementById("moedaConversao");
+      const selectMoedaA = document.getElementById("moedaA");
+      const selectMoedaB = document.getElementById("moedaB");
+      
+      // Limpar selects
+      selectConversao.innerHTML = '';
+      selectMoedaA.innerHTML = '';
+      selectMoedaB.innerHTML = '';
+      
+      // Adicionar opções
+      todasMoedas.forEach(moeda => {
+        const nomeCompleto = nomesMoedas[moeda] ? `${moeda} - ${nomesMoedas[moeda]}` : moeda;
+        
+        const option1 = document.createElement("option");
+        option1.value = moeda;
+        option1.textContent = nomeCompleto;
+        selectConversao.appendChild(option1);
+        
+        const option2 = document.createElement("option");
+        option2.value = moeda;
+        option2.textContent = nomeCompleto;
+        selectMoedaA.appendChild(option2);
+        
+        const option3 = document.createElement("option");
+        option3.value = moeda;
+        option3.textContent = nomeCompleto;
+        selectMoedaB.appendChild(option3);
+      });
+      
+      // Definir valores padrão
+      selectConversao.value = "USD";
+      selectMoedaA.value = "USD";
+      selectMoedaB.value = "EUR";
+    }
+
+    function salvarMoeda(codigo) {
+      let lista = JSON.parse(localStorage.getItem(storageKey)) || [];
+      if (!lista.includes(codigo)) {
+        lista.push(codigo);
+        localStorage.setItem(storageKey, JSON.stringify(lista));
+      }
+    }
+
+    function carregarMoedas() {
+      const lista = JSON.parse(localStorage.getItem(storageKey)) || [];
+      lista.forEach(codigo => {
+        if (!todasMoedas.includes(codigo)) {
+          todasMoedas.push(codigo);
+        }
+      });
+      todasMoedas.sort();
+    }
+
+    async function carregarMoedasSalvas() {
+      const lista = JSON.parse(localStorage.getItem(storageKey)) || [];
+      const container = document.getElementById("cardsPersonalizados");
+      
+      for (const codigo of lista) {
+        try {
+          const resposta = await fetch(API_BASE + `${codigo}-BRL`);
+          if (!resposta.ok) continue;
+          
+          const dados = await resposta.json();
+          const chave = Object.keys(dados)[0];
+          const moedaData = dados[chave];
+          
+          const valor = parseFloat(moedaData.ask).toFixed(moedaData.codein === "BRL" ? 2 : 0);
+          const nome = nomesMoedas[codigo] || `${codigo}`;
+          const variacao = parseFloat(moedaData.pctChange) || 0;
+          const variacaoClass = variacao >= 0 ? "positivo" : "negativo";
+          const variacaoSinal = variacao >= 0 ? "+" : "";
+
+          const card = document.createElement("div");
+          card.className = "card";
+          card.innerHTML = `
+            <div class="card-actions">
+              <button onclick="removerMoeda('${codigo}', this.parentNode.parentNode)" class="danger" title="Remover moeda">✕</button>
+            </div>
+            <img src="${imagensMoedas[codigo] || 'https://upload.wikimedia.org/wikipedia/commons/8/8c/Currency_exchange_icon.svg'}" 
+              alt="${nome}">
+            <h3>${nome}</h3>
+            <p class='valor'>R$ ${valor}</p>
+            <div class="variacao ${variacaoClass}">
+              ${variacaoSinal}${variacao}%
+            </div>
+            <div class="moeda-info">${codigo}/BRL</div>
+          `;
+          container.appendChild(card);
+          
+        } catch (error) {
+          console.error(`Erro ao carregar moeda ${codigo}:`, error);
+        }
+      }
+    }
+
+    function removerMoeda(codigo, elementoCard) {
+      if (confirm(`Tem certeza que deseja remover a moeda ${codigo}?`)) {
+        // Remover do array
+        todasMoedas = todasMoedas.filter(m => m !== codigo);
+        
+        // Remover do localStorage
+        let lista = JSON.parse(localStorage.getItem(storageKey)) || [];
+        lista = lista.filter(m => m !== codigo);
+        localStorage.setItem(storageKey, JSON.stringify(lista));
+        
+        // Remover visualmente
+        elementoCard.remove();
+        
+        // Atualizar selects
+        atualizarSelects();
+      }
+    }
+
+    function limparMoedas() {
+      if (confirm("Tem certeza que deseja limpar todas as moedas personalizadas?")) {
+        localStorage.removeItem(storageKey);
+        document.getElementById("cardsPersonalizados").innerHTML = "";
+        
+        // Restaurar apenas as moedas padrão
+        todasMoedas = [...moedasPadrao];
+        atualizarSelects();
+      }
+    }
+
+    // ===== FUNÇÕES DE ATUALIZAÇÃO =====
+    async function atualizarTodasMoedas() {
+      try {
+        // Atualizar moedas padrão
+        await atualizarCotacoes();
+        
+        // Atualizar moedas personalizadas
+        const container = document.getElementById("cardsPersonalizados");
+        const cards = container.querySelectorAll('.card');
+        
+        for (const card of cards) {
+          const codigo = card.querySelector('.moeda-info').textContent.split('/')[0];
+          try {
+            const resposta = await fetch(API_BASE + `${codigo}-BRL`);
+            if (resposta.ok) {
+              const dados = await resposta.json();
+              const chave = Object.keys(dados)[0];
+              const moedaData = dados[chave];
+              const valor = parseFloat(moedaData.ask).toFixed(moedaData.codein === "BRL" ? 2 : 0);
+              const variacao = parseFloat(moedaData.pctChange) || 0;
+              const variacaoClass = variacao >= 0 ? "positivo" : "negativo";
+              const variacaoSinal = variacao >= 0 ? "+" : "";
+              
+              card.querySelector('.valor').textContent = `R$ ${valor}`;
+              const variacaoElement = card.querySelector('.variacao');
+              variacaoElement.textContent = `${variacaoSinal}${variacao}%`;
+              variacaoElement.className = `variacao ${variacaoClass}`;
+            }
+          } catch (error) {
+            console.error(`Erro ao atualizar ${codigo}:`, error);
+          }
+        }
+        
+        document.getElementById("ultimaAtualizacao").textContent =
+          "Última atualização: " + new Date().toLocaleString("pt-BR");
+          
+        alert("Todas as cotações foram atualizadas!");
+      } catch (error) {
+        console.error("Erro ao atualizar todas as moedas:", error);
+        alert("Erro ao atualizar algumas cotações.");
+      }
+    }
+
+    // ===== FUNÇÕES DE CONVERSÃO E COMPARAÇÃO =====
+    async function converterValor() {
+      const valor = parseFloat(document.getElementById("valorConversao").value);
+      const moedaSelect = document.getElementById("moedaConversao");
+      const moeda = moedaSelect.value.split(' ')[0]; // Pega apenas o código
+      
+      if (isNaN(valor) || valor <= 0) {
+        alert("Digite um valor válido!");
+        document.getElementById("valorConversao").focus();
+        return;
+      }
+      
+      try {
+        const resposta = await fetch(API_BASE + `${moeda}-BRL`);
+        if (!resposta.ok) throw new Error("Erro ao buscar cotação");
+        
+        const dados = await resposta.json();
+        const chave = Object.keys(dados)[0];
+        const taxa = parseFloat(dados[chave].ask);
+        const resultado = valor * taxa;
+        
+        document.getElementById("resultadoConversao").textContent =
+          `${valor.toLocaleString('pt-BR')} ${moeda} = R$ ${resultado.toFixed(2)}`;
+      } catch (error) {
+        console.error(error);
+        alert("Erro ao converter valor. Verifique sua conexão.");
+      }
+    }
+
+    async function compararMoedas() {
+      const moedaASelect = document.getElementById("moedaA");
+      const moedaBSelect = document.getElementById("moedaB");
+      
+      const mA = moedaASelect.value.split(' ')[0]; // Pega apenas o código
+      const mB = moedaBSelect.value.split(' ')[0]; // Pega apenas o código
+      
+      if (mA === mB) {
+        alert("Escolha moedas diferentes!");
+        return;
+      }
+      
+      try {
+        const resposta = await fetch(API_BASE + `${mA}-BRL,${mB}-BRL`);
+        if (!resposta.ok) throw new Error("Erro ao buscar cotações");
+        
+        const dados = await resposta.json();
+        const vA = parseFloat(dados[Object.keys(dados)[0]].ask);
+        const vB = parseFloat(dados[Object.keys(dados)[1]].ask);
+        
+        document.getElementById("resultadoComparacao").textContent =
+          vA > vB
+            ? `${mA} está mais valorizada (R$ ${vA.toFixed(2)}) que ${mB} (R$ ${vB.toFixed(2)})`
+            : `${mB} está mais valorizada (R$ ${vB.toFixed(2)}) que ${mA} (R$ ${vA.toFixed(2)})`;
+      } catch (error) {
+        console.error(error);
+        alert("Erro ao comparar moedas. Verifique sua conexão.");
+      }
+    }
+
+    // ===== INICIALIZAÇÃO =====
+    window.addEventListener('DOMContentLoaded', async () => {
+      // Carregar moedas salvas
+      carregarMoedas();
+      
+      // Atualizar cotações iniciais
+      await atualizarCotacoes();
+      
+      // Carregar moedas personalizadas salvas
+      await carregarMoedasSalvas();
+      
+      // Inicializar selects
+      atualizarSelects();
+    });
+  </script>
+</body>
+</html>

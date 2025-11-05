@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APP TODO EM JAVASCRIPT</title>
+
+    <style>
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: whitesmoke;
+            color: #222;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 6px 18px rgb(77, 76, 76);
+        }
+
+        h1 {
+            margin: 0 0 8px 0;
+            color: #003366;
+            text-align: center;
+        }
+
+        p.apres {
+            margin-top: 0;
+            color: #555;
+            text-align: center;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        input[type="text"] {
+            flex: 1;
+            padding: 10px 12px;
+            font-size: 16px;
+            border: 1px solid #cfd8e3;
+            border-radius: 6px;
+        }
+
+        button.btn {
+            background: #0055cc;
+            color: #fff;
+            border: none;
+            padding: 10px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+        }
+
+        button.btn:hover { background: #0042a8; }
+
+        .todo-card {
+            margin-top: 20px;
+            padding: 14px;
+            border-radius: 8px;
+            background: #f0f7ff;
+            border: 1px solid #dbe9ff;
+        }
+
+        ul.todo-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        ul.todo-list li {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px;
+            border-bottom: 1px dashed rgb(72, 71, 71);
+        }
+
+        ul.todo-list li:last-child { border-bottom: none; }
+
+        .task-text {
+            flex: 1;
+            font-size: 16px;
+            color: #222;
+        }
+
+        .completed .task-text {
+            text-decoration: line-through;
+            color: #777;
+            opacity: 0.85;
+        }
+
+        .task-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            padding: 6px 8px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+
+        .icon-btn:hover {
+            background: #ddd;
+        }
+
+        .count {
+            margin-top: 10px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        @media (max-width: 520px) {
+            .form-row {
+                flex-direction: column;
+            }
+            .task-actions {
+                gap: 4px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>To-Do List</h1>
+        <p class="apres">Crie, edite e gerencie suas tarefas com JavaScript!</p>
+
+        <div class="form-row" aria-label="Formulário de tarefas">
+            <input id="inputTarefa" type="text" placeholder="Digite uma nova tarefa e pressione Adicionar ou Enter" />
+            <button id="btnAdicionar" class="btn">Adicionar</button>
+        </div>
+
+        <div class="todo-card" aria-live="polite">
+            <h3>Minhas Tarefas</h3>
+            <ul id="listaTarefas" class="todo-list"></ul>
+            <div class="count" id="contador">Total: 0 tarefas</div>
+            <div>
+                <button id="btnLimparConcluidas" class="btn">Limpar Concluídas</button>
+                <button id="btnLimparTudo" class="btn">Limpar Tudo</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const inputTarefa = document.getElementById("inputTarefa");
+        const btnAdicionar = document.getElementById("btnAdicionar");
+        const listaTarefas = document.getElementById("listaTarefas");
+        const contador = document.getElementById("contador");
+        const btnLimparConcluidas = document.getElementById("btnLimparConcluidas");
+        const btnLimparTudo = document.getElementById("btnLimparTudo");
+
+        let tarefas = JSON.parse(localStorage.getItem("tarefas")) || [];
+
+        // Atualiza contador
+        function atualizarContador() {
+            const total = tarefas.length;
+            const concluidas = tarefas.filter(t => t.concluida).length;
+            contador.textContent = `Total: ${total} tarefas - Concluídas: ${concluidas}`;
+        }
+
+        // Salva no localStorage
+        function salvarLocalStorage() {
+            localStorage.setItem("tarefas", JSON.stringify(tarefas));
+        }
+
+        // Cria elemento de tarefa
+        function criarElementoTarefa(tarefa) {
+            const li = document.createElement("li");
+            li.dataset.id = tarefa.id;
+            if (tarefa.concluida) li.classList.add("completed");
+
+            const chk = document.createElement("input");
+            chk.type = "checkbox";
+            chk.checked = tarefa.concluida;
+            chk.setAttribute("aria-label", "Marcar tarefa como concluída");
+
+            const span = document.createElement("span");
+            span.className = "task-text";
+            span.textContent = tarefa.texto;
+
+            const actions = document.createElement("div");
+            actions.className = "task-actions";
+
+            const btnEditar = document.createElement("button");
+            btnEditar.className = "icon-btn";
+            btnEditar.textContent = "Editar";
+
+            const btnExcluir = document.createElement("button");
+            btnExcluir.className = "icon-btn";
+            btnExcluir.textContent = "Excluir";
+
+            li.appendChild(chk);
+            li.appendChild(span);
+            actions.appendChild(btnEditar);
+            actions.appendChild(btnExcluir);
+            li.appendChild(actions);
+
+            chk.addEventListener("change", () => {
+                tarefa.concluida = chk.checked;
+                li.classList.toggle("completed", tarefa.concluida);
+                atualizarContador();
+                salvarLocalStorage();
+            });
+
+            btnExcluir.addEventListener("click", () => {
+                excluirTarefa(tarefa.id);
+            });
+
+            btnEditar.addEventListener("click", () => {
+                editarTarefaInline(tarefa, span);
+            });
+
+            return li;
+        }
+
+        // Adiciona nova tarefa
+        function adicionarTarefa(texto) {
+            const textoLimpo = texto.trim();
+            if (!textoLimpo) return;
+
+            const nova = {
+                id: Date.now().toString(),
+                texto: textoLimpo,
+                concluida: false
+            };
+
+            tarefas.push(nova);
+            const li = criarElementoTarefa(nova);
+            listaTarefas.appendChild(li);
+            inputTarefa.value = "";
+            atualizarContador();
+            salvarLocalStorage();
+        }
+
+        // Excluir tarefa
+        function excluirTarefa(id) {
+            tarefas = tarefas.filter(t => t.id !== id);
+            const li = listaTarefas.querySelector(`li[data-id="${id}"]`);
+            if (li) li.remove();
+            atualizarContador();
+            salvarLocalStorage();
+        }
+
+        // Editar tarefa inline
+        function editarTarefaInline(tarefa, spanElemento) {
+            const input = document.createElement("input");
+            input.type = "text";
+            input.value = tarefa.texto;
+            input.style.flex = "1";
+            spanElemento.replaceWith(input);
+            input.focus();
+
+            function concluirEdicao() {
+                const novoTexto = input.value.trim();
+                tarefa.texto = novoTexto || tarefa.texto;
+                const novoSpan = document.createElement("span");
+                novoSpan.className = "task-text";
+                novoSpan.textContent = tarefa.texto;
+                input.replaceWith(novoSpan);
+                atualizarContador();
+                salvarLocalStorage();
+            }
+
+            input.addEventListener("keydown", (ev) => {
+                if (ev.key === "Enter") concluirEdicao();
+                else if (ev.key === "Escape") {
+                    const novoSpan = document.createElement("span");
+                    novoSpan.className = "task-text";
+                    novoSpan.textContent = tarefa.texto;
+                    input.replaceWith(novoSpan);
+                }
+            });
+
+            input.addEventListener("blur", concluirEdicao);
+        }
+
+        // Reconstrói lista (usado ao carregar ou limpar)
+        function reconstruirLista() {
+            listaTarefas.innerHTML = "";
+            for (const t of tarefas) {
+                const li = criarElementoTarefa(t);
+                listaTarefas.appendChild(li);
+            }
+            atualizarContador();
+        }
+
+        // Eventos
+        btnAdicionar.addEventListener("click", () => adicionarTarefa(inputTarefa.value));
+        inputTarefa.addEventListener("keydown", (ev) => {
+            if (ev.key === "Enter") adicionarTarefa(inputTarefa.value);
+        });
+
+        btnLimparConcluidas.addEventListener("click", () => {
+            tarefas = tarefas.filter(t => !t.concluida);
+            reconstruirLista();
+            salvarLocalStorage();
+        });
+
+        btnLimparTudo.addEventListener("click", () => {
+            if (confirm("Tem certeza que deseja remover todas as tarefas?")) {
+                tarefas = [];
+                reconstruirLista();
+                salvarLocalStorage();
+            }
+        });
+
+        // Inicializa lista
+        reconstruirLista();
+    </script>
+</body>
+</html>

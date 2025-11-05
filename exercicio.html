@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <style>
+
+        .inicio{
+            margin-left: 100px;
+        }
+
+        .Equipe{
+            margin-top: -18px;
+        }
+
+        .Contato{
+            margin-top: -18px;
+            margin-right: 110px;
+        }
+
+        .seção1{
+           text-align: center; 
+        }
+
+
+        p{
+            text-align: center;
+        }
+        
+        .botao{
+            margin-left: 910px;
+        }
+
+        .cards {
+      display: grid;
+      grid-template-columns: 1fr; /* mobile first: 1 coluna */
+      gap: 20px;
+    }
+
+    .card {
+      background: #fff;
+      border-radius: 10px;
+      padding: 15px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+      text-align: center;
+    }
+
+    .card img {
+      width: 180px;
+      margin-bottom: 10px;
+    }
+
+        .rodape{
+            text-align: center;
+            
+        }
+
+         @media (min-width: 700px) {
+      .hero {
+        grid-template-columns: 1fr 1fr; /* texto + imagem lado a lado */
+      }
+
+      .cards {
+        grid-template-columns: repeat(2, 1fr); /* 2 colunas */
+      }
+    }
+
+    /* Quando a tela for >= 1000px (desktops) */
+    @media (min-width: 1000px) {
+      .cards {
+        grid-template-columns: repeat(3, 1fr); /* 3 colunas */
+      }
+    }
+    </style>
+</head>
+<body>
+
+    <p>Página responsiva</p>
+    <div class="seção1">
+    <section>
+        <div class="inicio">
+        <a href="">inicio</a>
+        </div>
+        <div class="Equipe">
+        <a href="">Equipe</a>
+        </div>
+        <div class="Contato">
+        <a href="">Contato</a>
+        </div>
+    </section>
+      </div>
+      <br><br>
+
+      <div class="Flexbox">
+      <section>
+
+
+        <button class="botao">Saiba Mais</button>
+
+      </section>
+      </div>
+<br><br>
+
+      <footer class="rodape">Feito por : Bruno de Almeida Lima</footer>
+
+      
+    </body>
+</html>

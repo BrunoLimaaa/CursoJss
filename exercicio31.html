@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        *{
+            box-sizing: border-box;
+        }
+
+        body{
+            font-family: sans-serif;
+            background: white;
+            margin: 0;
+            padding: 20px;
+            color: #000;
+        }
+        h1{
+            text-align: center;
+            color: #000;
+        }
+
+        .container{
+            background: white(33, 22, 189);
+            max-width: 900px;
+                margin: 0 auto;
+                padding: 20px;
+                border-radius: 10px;
+                box-shadow: 0 0 10px rgb(54, 52, 52);
+        }
+
+
+        section{
+            background: rgb(230, 10, 10);
+            padding: 20px;
+            border-radius: 12px;
+            margin-top: 20px;
+
+        }
+
+        button{
+            background-color: #a79f9fa8;
+            color: white;
+            border-radius: 5px;
+            padding: 10px 15px;
+            margin-top: 10px;
+            cursor: pointer;
+
+        }
+
+        button:hover{
+            background-color: blue;
+
+        }
+
+        .resultado{
+            background: #f0fff0;
+            border: 1px solid #8bc34a;
+            border-radius: 5px;
+            margin-top: 10px;
+            white-space: pre-line;
+            font-family: monospace;
+        }
+
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Estruturas de Repetição em JS</h1>
+
+        <p>Vamos construir passo a passo e en tender como funciona laços <b>for</b> <b>while</b>  <b>do while</b></p>
+
+        <section id="passo1">
+            <h2>Passo 1 - Estrutura FOR</h2>
+            <p>No html criamos um botão para executar o laço <b>for</b> e uma área pra exibir o resultado</p>
+
+            <button id="btnFor">Executar FOR    </button>
+
+            <div id="saidaFor" class="resultado"></div>
+        </section>
+    </div>
+
+    <section id="passo2">
+            <h2>Passo 2 - Estrutura FOR</h2>
+            <p>No html criamos um botão para executar o laço <b>for</b> e uma área pra exibir o resultado</p>
+
+            <button id="btnWhile">Executar WHILE   </button>
+
+            <div id="saidaWhile" class="resultado"></div>
+        </section>
+
+         <section id="passo3">
+            <h2>Passo 3 - Estrutura DO WHILE</h2>
+            <p>No html criamos um botão para executar o laço <b>DO WHILE</b> e uma área pra exibir o resultado</p>
+
+            <button id="btnDoWhile">Executar DO WHILE   </button>
+
+            <div id="saidaDoWhile" class="resultado"></div>
+        </section>
+
+
+         <section id="passo4">
+            <h2>Passo 4 - Estrutura FOROF</h2>
+            <p>No html criamos um botão para executar o laço <b>DO WHILE</b> e uma área pra exibir o resultado</p>
+
+            <button id="btnForof">Executar DO FOROF </button>
+
+            <div id="saidaForof" class="resultado"></div>
+        </section>
+
+
+         <section id="passo5">
+            <h2>Passo 5 - Estrutura FOR IN</h2>
+            <p>O<b>for... in</b> <b>percorre</b> chaves ou indices de um projeto</p>
+
+            <button id="btnForIn"> Executar for...in  </button>
+
+            <div id="saidaForIn" class="resultado"></div>
+        </section>
+
+
+        
+         <section id="passo6">
+            <h2>Passo 6 - Estrutura FOR EACH</h2>
+            <p>O<b>for... each</b> <b>percorre</b> arrays usando a função callblack</p>
+
+            <button id="btnForEach"> Executar for...in  </button>
+
+            <div id="saidaForEach" class="resultado"></div>
+        </section> 
+   
+                
+
+         <section id="passo7">
+            <h2>Passo 7 - metodo "for" com lista Simples</h2>
+            <p>O<b>O metodo</b> <b>for simples</b> percorre uma lista chave: valor</p>
+
+            <button id="btnForListaSimples"> Executar for com liesta simples </button>
+
+            <div id="saidaForListaSimples" class="resultado"></div>
+        </section>
+ 
+
+    <script>
+
+        const btnFor = document.getElementById("btnFor");
+        btnFor.addEventListener("click", ()=>{
+            let texto ="";
+            for(let i=0; i<=50; i+=2){
+                
+                
+                texto += "Contando com FOR:" + i +"\n";
+                console.log(i);
+
+            }
+            
+            
+            document.getElementById("saidaFor").textContent = texto;
+        });
+
+
+
+
+       const btnWhile = document.getElementById("btnWhile");
+       btnWhile.addEventListener("click", function(){
+        let contador = 1;
+        let texto ="";
+        while(contador<= 100){
+            texto +="Contando com while" + contador + "\n";
+            contador++;
+            console.log(contador);
+           
+
+        }
+ document.getElementById("saidaWhile").textContent = texto;
+       });
+
+
+
+
+         const btnDoWhile = document.getElementById("btnDoWhile");
+       btnDoWhile.addEventListener("click", function(){
+        let igs = 1;
+        let texto ="";
+        do {
+            texto +="Executando Do While" + igs +"\n";
+            igs++;
+            console.log(igs);
+        } while (igs<=100);
+
+        texto+="(Executou pelo menos uma vez!)";
+        document.getElementById("saidaDoWhile").textContent = texto;
+
+           
+
+        });
+
+       
+
+
+        const btnForof = document.getElementById("btnForof");
+        btnForof.addEventListener("click", function(){
+
+            const frutas= ["Maça", "Banana", "Laranja", "Uva", "Limão", "Melão"]
+            let texto = "";
+            for (let fruta of frutas){
+                texto += "Fruta:" + fruta + "\n";
+                console.log(fruta);
+            }
+            document.getElementById("saidaForof").textContent = texto;
+
+        });
+
+
+          const btnForIn = document.getElementById("btnForIn");
+        btnForIn.addEventListener("click", function(){
+
+            const pessoa = {nome: "Ana", idade:25, cidade:"Campinas"};
+            let texto = "";
+            for (let chave in pessoa){
+                texto += chave + ": "+ pessoa [chave] + "\n";
+
+            }
+             document.getElementById("saidaForIn").textContent = texto;
+
+        });
+
+         const btnForEach = document.getElementById("btnForEach");
+        btnForEach.addEventListener("click", function(){
+
+            const numero = [10, 20, 30, 40];
+            let texto ="";
+            numero.forEach(function(valor, indice){
+                texto += `Indice ${indice}: Valor ${valor}\n`;
+                console.log({indice});
+            
+                });
+
+             document.getElementById("saidaForEach").textContent = texto;
+            
+        });
+
+
+        const btnForListaSimples = document.getElementById("btnForListaSimples");
+        btnForListaSimples.addEventListener("click", function(){
+
+            const pessoas = [
+            { nome: "Ana", idade: 25, cidade: "Campinas" },
+        { nome: "Bruno", idade: 30, cidade: "São Paulo" },
+        { nome: "Carla", idade: 28, cidade: "Rio de Janeiro" },
+        { nome: "Diego", idade: 22, cidade: "Curitiba" },
+        { nome: "Eduarda", idade: 35, cidade: "Belo Horizonte" },
+        { nome: "Felipe", idade: 27, cidade: "Fortaleza" },
+        { nome: "Gabriela", idade: 31, cidade: "Porto Alegre" },
+        { nome: "Henrique", idade: 29, cidade: "Recife" },
+        { nome: "Isabela", idade: 24, cidade: "Salvador" },
+        { nome: "João", idade: 33, cidade: "Florianópolis" }
+            ];
+
+
+            let texto = "";
+            for(let i=0; i< pessoas.length; i++){
+                texto += pessoas[i].nome + " - "+ pessoas[i].cidade + "\n";
+                console.log(pessoas[i].idade);
+
+            }
+
+             document.getElementById("saidaForListaSimples").textContent = texto;
+
+        });
+
+
+
+
+
+
+    </script>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estruturas de Repetição — For, While e Do While</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #08df24;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 1200px;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: rgb(209, 39, 9);
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card h2 {
+            color: #2c3e50;
+        }
+
+        .card p {
+            color: #555;
+        }
+
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #0056b3;
+        }
+
+        .resultado {
+            background: #f8f9fa;
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 6px;
+            font-family: "Courier New", monospace;
+            white-space: pre-wrap;
+            min-height: 150px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <!-- CARD 1 - FOR -->
+        <div class="card">
+            <h2>Laço FOR</h2>
+            <p>Exibe a lista de presidentes e seus países usando o laço <strong>for</strong>.</p>
+            <button id="btnFor">Executar FOR</button>
+            <div class="resultado" id="resultadoFor"></div>
+        </div>
+
+        <!-- CARD 2 - WHILE -->
+        <div class="card">
+            <h2>Laço WHILE</h2>
+            <p>Exibe a lista de cidades e países usando o laço <strong>while</strong>.</p>
+            <button id="btnWhile">Executar WHILE</button>
+            <div class="resultado" id="resultadoWhile"></div>
+        </div>
+
+        <!-- CARD 3 - DO WHILE -->
+        <div class="card">
+            <h2>Laço DO WHILE</h2>
+            <p>Exibe a lista de produtos e preços usando o laço <strong>do while</strong>.</p>
+            <button id="btnDoWhile">Executar DO WHILE</button>
+            <div class="resultado" id="resultadoDoWhile"></div>
+        </div>
+
+    </div>
+
+    <script>
+        // =========================
+        // DADOS - PRESIDENTES (FOR)
+        // =========================
+        const presidentes = [
+            { nome: "Joe Biden", pais: "Estados Unidos" },
+            { nome: "Emmanuel Macron", pais: "França" },
+            { nome: "Luiz Inácio Lula da Silva", pais: "Brasil" },
+            { nome: "Olaf Scholz", pais: "Alemanha" },
+            { nome: "Fumio Kishida", pais: "Japão" },
+            { nome: "Pedro Sánchez", pais: "Espanha" },
+            { nome: "Rishi Sunak", pais: "Reino Unido" },
+            { nome: "Justin Trudeau", pais: "Canadá" },
+            { nome: "Giorgia Meloni", pais: "Itália" },
+            { nome: "Andrés Manuel López Obrador", pais: "México" }
+        ];
+
+        // ======================
+        // DADOS - CIDADES (WHILE)
+        // ======================
+        const cidades = [
+            { cidade: "São Paulo", pais: "Brasil" },
+            { cidade: "Nova York", pais: "EUA" },
+            { cidade: "Tóquio", pais: "Japão" },
+            { cidade: "Paris", pais: "França" },
+            { cidade: "Londres", pais: "Reino Unido" },
+            { cidade: "Toronto", pais: "Canadá" },
+            { cidade: "Buenos Aires", pais: "Argentina" },
+            { cidade: "Roma", pais: "Itália" },
+            { cidade: "Madri", pais: "Espanha" },
+            { cidade: "Pequim", pais: "China" },
+            { cidade: "Cidade do Cabo", pais: "África do Sul" },
+            { cidade: "Lisboa", pais: "Portugal" },
+            { cidade: "Sydney", pais: "Austrália" },
+            { cidade: "Seul", pais: "Coreia do Sul" },
+            { cidade: "Moscou", pais: "Rússia" },
+            { cidade: "Cidade do México", pais: "México" },
+            { cidade: "Berlim", pais: "Alemanha" },
+            { cidade: "Amsterdã", pais: "Holanda" },
+            { cidade: "Los Angeles", pais: "EUA" },
+            { cidade: "Viena", pais: "Áustria" }
+        ];
+
+        // ===========================
+        // DADOS - PRODUTOS (DO WHILE)
+        // ===========================
+        const produtos = [
+            { nome: "Notebook", preco: 3500 },
+            { nome: "Smartphone", preco: 2200 },
+            { nome: "Monitor 24\"", preco: 899 },
+            { nome: "Teclado Mecânico", preco: 499 },
+            { nome: "Mouse Gamer", preco: 199 },
+            { nome: "Impressora", preco: 750 },
+            { nome: "Cadeira Gamer", preco: 1200 },
+            { nome: "Headset Bluetooth", preco: 380 },
+            { nome: "Caixa de Som", preco: 250 },
+            { nome: "Pen Drive 64GB", preco: 70 },
+            { nome: "HD Externo 1TB", preco: 430 },
+            { nome: "SSD 512GB", preco: 460 },
+            { nome: "Roteador Wi-Fi 6", preco: 560 },
+            { nome: "Tablet 10\"", preco: 1600 },
+            { nome: "Webcam Full HD", preco: 290 },
+            { nome: "Microfone USB", preco: 390 },
+            { nome: "Placa de Vídeo", preco: 3200 },
+            { nome: "Fonte 650W", preco: 420 },
+            { nome: "Cooler CPU", preco: 180 },
+            { nome: "Controle sem fio", preco: 260 }
+        ];
+
+        // ========================
+        // EVENTOS DOS BOTÕES
+        // ========================
+
+        // FOR
+        document.getElementById("btnFor").addEventListener("click", () => {
+            let resultado = "";
+            for (let i = 0; i < presidentes.length; i++) {
+                resultado += `${i + 1}. ${presidentes[i].nome} — ${presidentes[i].pais}\n`;
+            }
+            document.getElementById("resultadoFor").textContent = resultado;
+        });
+
+        // WHILE
+        document.getElementById("btnWhile").addEventListener("click", () => {
+            let i = 0;
+            let resultado = "";
+            while (i < cidades.length) {
+                resultado += `${i + 1}. ${cidades[i].cidade} — ${cidades[i].pais}\n`;
+                i++;
+            }
+            document.getElementById("resultadoWhile").textContent = resultado;
+        });
+
+        // DO WHILE
+        document.getElementById("btnDoWhile").addEventListener("click", () => {
+            let i = 0;
+            let resultado = "";
+            do {
+                resultado += `${i + 1}. ${produtos[i].nome} — R$ ${produtos[i].preco.toFixed(2)}\n`;
+                i++;
+            } while (i < produtos.length);
+            resultado += "\n(Executou pelo menos uma vez!)";
+            document.getElementById("resultadoDoWhile").textContent = resultado;
+        });
+    </script>
+</body>
+</html>

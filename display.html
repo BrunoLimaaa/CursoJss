@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+    <html lang="pt-br">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>exemplo display</title>
+        <style>
+            .body{
+                font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
+                background-color: beige;
+                margin: 0;
+                padding: 20px;
+                color: #333;
+            }
+
+            h1, h2{
+                text-align: center;
+                color: #004080;
+            }
+
+            section{
+                border: 2px solid #ccc;
+                border-radius: 20px;
+                padding: 15px;
+                margin: 20px auto;
+                max-width: 900px;
+                box-shadow:  0 0 8px black;
+                background-color: #fff;
+            }
+            .box{
+                background-color:antiquewhite;
+                border: 2px solid #004080;
+                padding: 10px;
+                margin: 5px;
+                color: #00264d;
+                font-weight: bold;
+                text-align: center;
+
+            }
+            .box:hover{
+                cursor: pointer;
+                background-color: #004080;
+                color: white;
+
+            }
+
+            .block .box{
+                display: block;
+
+            }
+
+            .nota{
+                font-style: italic;
+                font-size: 14px;
+                color: #666;
+                margin-top: 5px;
+            }
+
+            .inline .boxb{
+                display: inline;
+            }
+            .boxb{
+            background-color:antiquewhite;
+                border: 2px solid #004080;
+                padding: 10px;
+                margin: 5px;
+                color: #00264d;
+                font-weight: bold;
+                text-align: center;
+            }
+        
+
+            .boxb:hover{
+                cursor: pointer;
+                background-color: #004080;
+                color: white;
+
+            }
+
+            .inline-block .box{
+                display: inline-block;
+                width: 100px;
+                height: 50px;
+
+            }
+            
+            .flex{
+                display: flex;
+                justify-content: space-around;
+                align-items: center;
+                background-color: #e8f0ff;
+                padding: 0;
+            }
+
+.grid{
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 10px;
+    background-color: #fff;
+    padding: 10px;
+}
+
+.none .box{
+ display: none;
+
+}
+
+.hidden .box{
+    visibility: hidden;
+}
+
+.table{
+    display: table;
+    width: 100%;
+    border-collapse: collapse;
+    background-color: whitesmoke;
+}
+
+.table-row{
+    display: table-row;
+}
+
+.table-cell{
+    display: table-cell;
+    border: 1px solid blue;
+    padding: 8px;
+}
+
+.inline flex{
+    display: inline-flex;
+    justify-content: space-between;
+    width: 100%;
+    background-color: #fff;
+    padding: 100px;
+}
+        </style>
+    </head>
+    <body>
+        <h1>exemplo display block</h1>
+        <section class="block">
+            <h2>display:block</h2>
+            <div class="box">A</div>
+            <div class="box">A</div>
+            <div class="box">A</div>
+            <p class="nota">cada elemento ocupa uma linha inteira (um abaixo do outro)</p>
+
+        </section>
+    
+        <h1>exemplo display inline</h1>
+        <section class="inline">
+            <h2>display:inline</h2>
+            <div class="boxb">A</div>
+            <div class="boxb">A</div>
+            <div class="boxb">A</div>
+            <p class="nota">cada elemento aparece um do lado do outro</p>
+        </section>
+
+        <h1>exemplo inline-block</h1>
+        <section class="inline-block">
+            <h2>display:inline-block</h2>
+            <div class="box">A</div>
+            <div class="box">A</div>
+            <div class="box">A</div>
+            <p class="nota">cada elemento aparece um do lado do outro porem pode mecher nele estilizar</p>
+
+        </section>
+
+        <h1>exemplo display flex</h1>
+        
+        <section >
+            <h2>display:flex</h2>
+            <div class="flex">
+                <div class="box">A</div>
+                <div class="box">A</div>
+                <div class="box">A</div>
+            </div>
+            <p class="nota">cada elemento ficam lado a lado com controle e facilidade de trocar</p>
+
+        </section>
+
+        <h1>exemplo display grid</h1>
+         <section >
+            <h2>display:grid</h2>
+            <div class="grid">
+                <div class="box">A</div>
+                <div class="box">A</div>
+                <div class="box">A</div>
+            </div>
+            <p class="nota">eles usa o espaço todo porem estao um ao lado do outro</p>
+
+        </section>
+        
+        <h1>exemplo display none</h1>
+         <section >
+            <h2>display:none</h2>
+            <div class="none">
+                <div class="box">A</div>
+                <div class="box">A</div>
+                <div class="box">A</div>
+            </div>
+            <p class="nota">nao aparece e nem ocupa espaço</p>
+
+        </section>
+
+        <h1>exemplo display hidden</h1>
+         <section >
+            <h2>display:hidden</h2>
+            <div class="hidden">
+                <div class="box">A</div>
+                <div class="box">A</div>
+                <div class="box">A</div>
+            </div>
+            <p class="nota">ficam invisiveis porem ocupa espaço</p>
+
+        </section>
+
+
+        <section>
+            <h2>display: label / label row / table-cell</h2>
+            <div class="table ">
+                <div class="table-cell">a</div>
+                <div class="table-cell">b</div>
+                <div class="table-cell">c</div>
+
+            <div class="table-row">
+                 <div class="table-cell">d</div>
+                <div class="table-cell">e</div>
+                <div class="table-cell">f</div>
+            </div>
+
+            <div class="table-row">
+                 <div class="table-cell">g</div>
+                <div class="table-cell">h</div>
+                <div class="table-cell">i</div>
+            </div>
+
+            </div>
+            <p class="nota">simula tabela com divs</p>
+
+        </section>
+
+
+        <section>
+            <h2>display: inline-flex</h2>
+            <div class="inline-flex">
+                <div class="box">A</div>
+                <div class="box">A</div>
+                <div class="box">A</div>
+            </div>
+
+        </section>
+
+
+
+        
+    </body>
+    </html>
